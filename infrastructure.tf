@@ -1,4 +1,35 @@
 # Infrastructure related to csgo-server
+## Startup Script
+data "template_file" "csgo-server-launcher-conf" {
+  template = "${file("templates/csgo-server-launcher.conf")}"
+
+  vars {
+    screen-name = "${var.screen-name}"
+    user = "${var.user}"
+    port = "${var.port}"
+    gslt = "${var.gslt}"
+    dir-steamcmd = "${var.dir-steamcmd}"
+    steam-login = "${var.steam-login}"
+    steam-password = "${var.steam-password}"
+    steam-runscript = "${var.steam-runscript}"
+    dir-root = "${var.dir-root}"
+    dir-game = "${var.dir-game}"
+    dir-logs = "${var.dir-logs}"
+    daemon-game = "${var.daemon-game}"
+    update-log = "${var.update-log}"
+    update-email = "${var.update-email}"
+    update-retry = "${var.update-retry}"
+    api-authorization-key = "${var.api-authorization-key}"
+    workshop-collection-id = "${var.workshop-collection-id}"
+    workshop-start-map = "${var.workshop-start-map}"
+    maxplayers = "${var.maxplayers}"
+    tickrate = "${var.tickrate}"
+    extraparams = "${var.extraparams}"
+    param-start = "${var.param-start}"
+    param-update = "${var.param-update}"
+  }
+}
+
 ## Firewalls
 resource "google_compute_firewall" "csgo-server-firewall" {
   name = "csgo-server-firewall"
@@ -45,7 +76,9 @@ resource "google_compute_instance" "cgso-server" {
   }
 
   metadata {
+    csgo-server-conf = "${data.template_file.csgo-server-launcher-conf.rendered}"
     sshKeys = "${join("\n", var.csgo-instance-ssh-keys)}"
+    startup-script = "${file("./files/startup.sh")}"
   }
 
   tags = [
