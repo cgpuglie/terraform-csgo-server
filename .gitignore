@@ -1,0 +1,4 @@
+files/ssh-public-keys/*
+secret.auto.tfvars
+backend.tf
+.terraform/*
