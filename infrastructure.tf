@@ -54,6 +54,10 @@ resource "google_compute_firewall" "csgo-server-firewall" {
   source_ranges = ["0.0.0.0/0"]
 }
 
+## Static IP
+resource "google_compute_address" "csgo-server" {
+  name = "csgo-server-ip"
+}
 ## CSGO Server
 resource "google_compute_instance" "cgso-server" {
   name = "csgo-server"
@@ -72,7 +76,9 @@ resource "google_compute_instance" "cgso-server" {
 
   network_interface {
     network       = "default"
-    access_config {}
+    access_config {
+      nat_ip = "${google_compute_address.csgo-server.address}"
+    }
   }
 
   metadata {
